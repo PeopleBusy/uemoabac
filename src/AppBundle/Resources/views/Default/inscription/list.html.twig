@@ -1,0 +1,262 @@
+{% extends "::base.html.twig" %}
+
+
+{% block title %}
+
+    {% if ajourne is not empty  %}
+        Liste des ajournés
+    {% else %}
+        Liste des inscrits
+    {% endif %}
+
+{% endblock %}
+
+
+{% block body %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="ajourneModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="ajournerForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-red text-center" id="myModalLabel"></h4>
+                    </div>
+                    <div class="modal-body row">
+                        <div class="col-md-12">
+                            <label>Motif:</label>
+                            <textarea required="true" name="motif" class="form-control" id="motif" rows="5"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="nbannee" class="required">Nombre d'année:</label>
+                            <select id="nbannee" name="nbannee" required="required" class="form-control">
+                                <option value="0">0</option>
+                                <option value="1">1 an</option>
+                                <option value="2">2 ans</option>
+                                <option value="3">3 ans</option>
+                                <option value="4">4 ans</option>
+                                <option value="5">5 ans</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                        <button type="submit" class="btn btn-danger">Oui</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="autoriseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="autoriserForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabelAutoriseMatricule"></h4>
+                    </div>
+                    <div class="modal-body row">
+                        <h4 class="modal-title text-red text-center" id="myModalLabelAutoriseText"></h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                        <button type="submit" class="btn btn-danger">Oui</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="motifAjourneModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-red text-center" id="myModalLabelMotif"></h4>
+                    </div>
+                    <div class="modal-body row">
+                        <div class="col-md-12">
+                            <label>Motif:</label>
+                            <textarea class="form-control" readonly id="motifAjourne" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            <small></small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-user"></i> Inscriptions</a></li>
+            <li class="active">Liste</li>
+        </ol>
+
+        {% if success is defined  %}
+
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="box box-success box-solid" style="margin-bottom: 0px;">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Succès</h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                            <!-- /.box-tools -->
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            {{ success }}
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <section class="content">
+
+
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <i class="fa fa-list"></i>
+                   {{ libelle }}
+
+                </h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                        <i class="fa fa-minus"></i></button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                        <i class="fa fa-times"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <span class="">
+                                        <i class="fa fa-filter"></i>
+                                        Filtres
+                                    </span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form>
+                                    <div class="col-md-2">
+                                        <div>
+                                            <label for="annee" class="required">Année:</label>
+                                            <select id="annee" name="annee" required="required" class="form-control">
+                                                <option value="2018">2018</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Matricule:</label>
+                                        <input type="text" name="matricule" placeholder="Saisir un matricule" class="form-control pull-right" id="matricule">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <button type="submit" class="btn btn-primary marTop25px">Filtrer</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if inscriptions is empty  %}
+                    <h3 style="text-align: center;">Aucun enregistrement trouvé</h3>
+                {% else %}
+
+                    <div class="col-md-12 table-responsive">
+                        <table id="" class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th class="hide"><input type="checkbox"/></th>
+                                <th>Matricule</th>
+                                <th>Nom</th>
+                                <th>Prénom(s)</th>
+                                <th>Date de naissance</th>
+                                <th>Lieu de naissance</th>
+                                <th>Sexe</th>
+                                <th>Etablissement</th>
+                                <th>Pays</th>
+                                <th>Année</th>
+                                <th>Ajourné(e)</th>
+                                <th class="center">Action(s)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for i in inscriptions %}
+                                <tr class="">
+                                    <td class="hide"><input type="checkbox"/></td>
+                                    <td><span class="matricule badge bg-default">{{ i.eleve.matricule }}</span></td>
+                                    <td><span class="nom">{{ i.eleve.nom }}</span></td>
+                                    <td><span class="prenom">{{ i.eleve.prenom }}</span></td>
+                                    <td><span class="telephone">{{ i.eleve.datenaiss | date("d/m/Y") }}</span></td>
+                                    <td><span class="">{{ i.eleve.lieunaiss }}</span></td>
+                                    <td><span class="">{{ i.eleve.sexe }}</span></td>
+                                    <td><span class="">{{ i.etablissement }}</span></td>
+                                    <td><span class="">{{ i.pays }}</span></td>
+                                    <td><span class="">{{ i.annee }}</span></td>
+                                    <td>
+                                        {% if i.ajourne == 0  %}
+                                            <span class="badge bg-green">Non</span>
+                                        {% else %}
+                                            <span class="badge bg-red">Oui</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="center">
+
+                                        <a href="#" class="btn btn-success btn-xs btnAutoriser" data-path="{{ path('inscription_autoriser', {'id': i.id}) }}"
+                                                data-name="{{ i.eleve.nom }} {{ i.eleve.prenom }}" data-matricule="{{ i.eleve.matricule }}">Autoriser</a>
+                                        <a href="#" class="btn btn-primary btn-xs hide">Modifier</a>
+                                        {% if i.ajourne == 0  %}
+                                            <a href="#" data-name="{{ i.eleve.nom }} {{ i.eleve.prenom }}" data-path="{{ path('inscription_ajourner', {'id': i.id}) }}"
+                                               class="btn btn-danger btn-xs btnAjourner">Ajourner</a>
+                                        {% else %}
+                                            <a href="#" class="btn btn-success btn-xs hide">Rétablir</a>
+                                            <a href="#" class="btn btn-info btn-xs btnMotif" data-motif="{{ i.motifAjournement }}" data-name="{{ i.eleve.nom }} {{ i.eleve.prenom }}">Motif</a>
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+                {#Footer#}
+            </div>
+            <!-- /.box-footer-->
+        </div>
+    </section>
+
+{% endblock %}

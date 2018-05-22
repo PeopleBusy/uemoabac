@@ -1,0 +1,114 @@
+<style type="text/css">
+    table {width: 100% !important; border-collapse: collapse !important;}
+    .header td {width: 50% !important; vertical-align: top;}
+    .text-left {text-align: left;}
+    .text-right {text-align: right;}
+    .text-center {text-align: center;}
+    .separator {height: 5px;}
+    .breakW {word-break: break-all !important;}
+    .content td {border: solid 1px #CFD1D2; padding: 2px;}
+    .thcontent th {border: solid 1px #000000; padding: 2px; background-color: #000000; color: #ffffff;}
+    .tfcontent th {border: solid 1px #000000; padding: 2px; background-color: red; color: #ffffff;}
+    .bBlackFontWhite {background-color: yellow; color: #000000; font-weight: bold;}
+    .redFontWhite {background-color: red !important; color: #000000 !important; font-weight: bold !important;}
+</style>
+
+<page backtop="0" backright="0" backbottom="0" backleft="0" pageset="old">
+
+
+    <table class="header">
+        <tr>
+            <td class="text-left">
+                <img class="" style="width: 60px;height: 60px;" src=".{{asset('img/logo1.png') }}">
+            </td>
+        </tr>
+    </table>
+
+    <div class="text-center" style="position:absolute;top: 0px; width: 100%; font-size: 20px;">
+        <span class="" >PLANNING DU {{ title }}</span>
+    </div>
+
+    <div class="text-right" style="position:absolute;top: 40px; width: 100%;font-style: italic;">
+        <span style="">Agent: </span>
+        <span style="font-weight: bold; color: green;">{{ agent.nom }} {{ agent.prenom }}</span>
+    </div>
+
+    <div class="separator"></div>
+
+    <table id="" class="content" style="margin-bottom: 2px !important;">
+        <thead class="thcontent">
+            <tr>
+                <th style="width: 5px !important;">Client</th>
+                <th class="text-center">Date début</th>
+                <th class="text-center">Date fin</th>
+                <th class="text-center">Panier</th>
+                <th class="text-center">HJ</th>
+                <th class="text-center">HN</th>
+                <th class="text-center">TH</th>
+                <th class="text-center">HD</th>
+                <th class="text-center">HF</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for v in vacations %}
+            {% if v.heureFinVac|dayByDate == "6" or v.heureFinVac|dayByDate == "7"  %}
+                <tr class="bBlackFontWhite">
+            {% elseif v.heureDebVac|dayByDate == "6" or v.heureDebVac|dayByDate == "7"  %}
+                <tr class="bBlackFontWhite">
+            {% else %}
+                <tr class="">
+            {% endif %}
+
+                <td style="width: 5px !important;">{{ v.site.nomSite }}</td>
+                <td class="text-center"><span class="">{{ v.heureDebVac| date('d/m/Y H:i') }}</span></td>
+                <td class="text-center"><span class="">{{ v.heureFinVac| date('d/m/Y H:i') }}</span></td>
+                <td class="text-center"><span class="">{{ v.heurePanier }}</span></td>
+                <td class="text-center"><span class="">{{ v.heureJour | formaterChaine }}</span></td>
+                <td class="text-center"><span class="">{{ v.heureNuit | formaterChaine }}</span></td>
+                <td class="text-center"><span class="">{{ v.heureJour|sumheure(v.heureNuit) }}</span></td>
+                <td class="text-center"><span class="">{{ v.heureDimanche | formaterChaine }}</span></td>
+                <td class="text-center"><span class="">{{ v.heureFerie | formaterChaine }}</span></td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+        <tfoot class="tfcontent">
+            <tr>
+                <th class="" colspan="3"></th>
+                <th class="text-center">TP:<span class="badge bg-red"> {{ thp }}</span></th>
+                <th class="text-center">THJ:<span class="badge bg-red"> {{ thj }}</span></th>
+                <th class="text-center">THN:<span class="badge bg-red"> {{ thn }}</span></th>
+                <th class="text-center">THM:<span class="badge bg-red"> {{ thj|sumheure(thn) }}</span></th>
+                <th class="text-center">THD:<span class="badge bg-red"> {{ thd }}</span></th>
+                <th class="text-center">THF:<span class="badge bg-red"> {{ thf }}</span></th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div style="position:absolute;bottom: 0px; width: 100%;">
+
+        <table id="" style="width: 100%;" class="content">
+            <thead class="thcontent">
+                <tr>
+                    <th style="width: 50%;" class="text-center">Signature de la Direction</th>
+                    <th style="width: 50%;" class="text-center">Signature de l'agent</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 50%;" class="text-center"><div style="font-size:2px; height:25px;">&nbsp;</div></td>
+                    <td style="width: 50%;" class="text-center"><div style="font-size:2px; height:25px;">&nbsp;</div></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center">
+            <span style="color: red; font-size: 10px;" >Siège Social : 62 rue du Solayer – 63100 CLERMONT-FERRAND - Tel : 04.73.92.48.56 - Télécopie : 04.73.92.29.68</span><br>
+            <span style="font-size: 10px;">N° d'autorisation CNAPS : AUT-063-2113-09-22-20140367933 ; Article L612-14 du code de la sécurité intérieure </span><br>
+            <span style="font-size: 10px;">L’autorisation administrative préalable ne confère aucun caractère officiel à l’entreprise ou aux personnes qui en bénéficient.</span>
+        </div>
+
+    </div>
+
+
+</page>
